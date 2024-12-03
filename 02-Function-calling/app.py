@@ -102,22 +102,21 @@ def parse_clipboard():
                     temperature=0,
                 )
                 #st.text(response.model_dump_json(indent=2))
+                messages.append({"role": "assistant","content": str(response.choices[0].message)})
 
                 if response.choices[0].finish_reason == 'tool_calls':
                     if response.choices[0].message.tool_calls[0].function.name == 'GetDateByOffset':
-                        st.session_state.log += 'GetDateByOffsetが呼び出されました。\n'
-                        st.session_state.log += str(response.choices[0].message.tool_calls[0].function) + '\n'
-                        st.session_state.log += 'ーーーーーーーーーーーー\n'
+                        st.session_state.log += '---------------GetDateByOffsetが呼び出されました---------------\n'
+                        st.session_state.log += str(response.choices[0].message.tool_calls[0].function) + '\n\n'
                         arguments = json.loads(response.choices[0].message.tool_calls[0].function.arguments)
                         offset_list = arguments['offset_list']
                         dates = [get_date_by_offset(offset) for offset in offset_list]
                         messages.append({"role": "function","name":"GetDateByOffset", "content": str(dates)})
-                        #st.session_state.log += str(messages) + '\n'
+                        
 
                     elif response.choices[0].message.tool_calls[0].function.name == 'TicketReservationRequest':
-                        st.session_state.log += 'TicketReservationRequestが呼び出されました。\n'
-                        st.session_state.log += str(response.choices[0].message.tool_calls[0].function) + '\n'
-                        st.session_state.log += 'ーーーーーーーーーーーー\n'
+                        st.session_state.log += '---------------TicketReservationRequestが呼び出されました---------------\n'
+                        st.session_state.log += str(response.choices[0].message.tool_calls[0].function) + '\n\n'
                         arguments = json.loads(response.choices[0].message.tool_calls[0].function.arguments)
                         st.session_state.form.dept = arguments['dept']
                         st.session_state.form.dept_date = arguments['dept_date']
@@ -128,12 +127,15 @@ def parse_clipboard():
                         st.session_state.form.note = arguments['note']
                         break
                 else:
-                    st.session_state.log += '関数呼び出しが発生しませんでした。\n' 
+                    st.session_state.log += '---------------関数呼び出しが発生しませんでした。---------------\n\n' 
                 
                 max_attempts -= 1
 
         except Exception as e:
             st.error(f"エラーが発生しました: {e}")
+
+        st.session_state.log += '---------------最終的なメッセージのJSON---------------\n' 
+        st.session_state.log += json.dumps(messages, indent=2, ensure_ascii=False) + '\n'
 
 # タイトルを表示する。
 st.markdown("### Azure OpenAI Function calling サンプル")
