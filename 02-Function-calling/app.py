@@ -39,7 +39,7 @@ def get_date_by_offset(offset: int):
     return today.strftime('%Y/%m/%d')
 
 class GetDateByOffset(BaseModel):
-    offset: int
+    offset_list: list[int]
 
 class TicketReservationRequest(BaseModel):
     dept: str
@@ -107,13 +107,17 @@ def parse_clipboard():
                     if response.choices[0].message.tool_calls[0].function.name == 'GetDateByOffset':
                         st.session_state.log += 'GetDateByOffsetが呼び出されました。\n'
                         st.session_state.log += str(response.choices[0].message.tool_calls[0].function) + '\n'
+                        st.session_state.log += 'ーーーーーーーーーーーー\n'
                         arguments = json.loads(response.choices[0].message.tool_calls[0].function.arguments)
-                        today = get_date_by_offset(arguments['offset'])
-                        messages.append({"role": "function","name":"GetDateByOffset", "content": today})
+                        offset_list = arguments['offset_list']
+                        dates = [get_date_by_offset(offset) for offset in offset_list]
+                        messages.append({"role": "function","name":"GetDateByOffset", "content": str(dates)})
+                        #st.session_state.log += str(messages) + '\n'
 
                     elif response.choices[0].message.tool_calls[0].function.name == 'TicketReservationRequest':
                         st.session_state.log += 'TicketReservationRequestが呼び出されました。\n'
                         st.session_state.log += str(response.choices[0].message.tool_calls[0].function) + '\n'
+                        st.session_state.log += 'ーーーーーーーーーーーー\n'
                         arguments = json.loads(response.choices[0].message.tool_calls[0].function.arguments)
                         st.session_state.form.dept = arguments['dept']
                         st.session_state.form.dept_date = arguments['dept_date']
