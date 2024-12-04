@@ -33,14 +33,16 @@ client = AzureOpenAI(
     api_version=api_version
 )
 
-
+# Function callingで呼ばれる本日からの差分で目的の日付を計算する関数
 def get_date_by_offset(offset: int):
     today = datetime.date.today() + datetime.timedelta(days=offset)
     return today.strftime('%Y/%m/%d')
 
+# Function calling用のモデル - 日付を計算するためのパラメーター
 class GetDateByOffset(BaseModel):
     offset_list: list[int]
 
+# Function calling用のモデル - チケット予約リクエスト
 class TicketReservationRequest(BaseModel):
     dept: str
     dest: str
@@ -49,6 +51,12 @@ class TicketReservationRequest(BaseModel):
     adult_ticket_count: int
     child_ticket_count: int
     note: str
+
+# Function calling用のツールを定義する。
+tools = [
+    openai.pydantic_function_tool(GetDateByOffset),
+    openai.pydantic_function_tool(TicketReservationRequest)
+]
 
 # 値を動的にバインドするためのセッションステートを作成する。
 if 'form' not in st.session_state:
@@ -64,11 +72,6 @@ if 'form' not in st.session_state:
 
 if 'log' not in st.session_state:
     st.session_state.log = ""
-
-tools = [
-    openai.pydantic_function_tool(GetDateByOffset),
-    openai.pydantic_function_tool(TicketReservationRequest)
-]
 
 # クリップボードから値を読み取り、フォームにセットする関数を定義する。
 def parse_clipboard():
