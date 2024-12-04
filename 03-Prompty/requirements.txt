@@ -1,0 +1,5 @@
+streamlit == 1.40.2
+openai == 1.55.3
+python-dotenv == 1.0.1
+azure-identity == 1.19.0
+prompty == 0.1.39

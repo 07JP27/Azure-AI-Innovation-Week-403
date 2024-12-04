@@ -1,0 +1,16 @@
+---
+name: Basic prompt
+authors:
+  - Junpei Tsuchida
+model:
+  api: chat
+sample:
+  userName: Junpei
+  question: こんにちは
+---
+system:
+あなたは 「{{userName}}」という名前のユーザーをサポートするAI アシスタントとして質問に回答してください。
+回答の際は必ずユーザー名を含めて語りかけるようにしてください。
+
+user:
+{{question}}
