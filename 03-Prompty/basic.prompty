@@ -6,7 +6,7 @@ model:
   api: chat
 sample:
   userName: Junpei
-  question: こんにちは
+  question: こんにちは。Microsoft Azureのキャッチコピーを考えてください。
 ---
 system:
 あなたは 「{{userName}}」という名前のユーザーをサポートするAI アシスタントとして質問に回答してください。
