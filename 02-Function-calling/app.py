@@ -114,6 +114,10 @@ def parse_clipboard():
                         arguments = json.loads(response.choices[0].message.tool_calls[0].function.arguments)
                         offset_list = arguments['offset_list']
                         dates = [get_date_by_offset(offset) for offset in offset_list]
+
+                        st.session_state.log += '---------------GetDateByOffsetで日付を計算しました---------------\n'
+                        st.session_state.log += '日付オフセット：'+ str(offset_list) + '\n'+'算出日付：'+str(dates)+'\n\n'
+
                         messages.append({"role": "function","name":"GetDateByOffset", "content": str(dates)})
                         
 
