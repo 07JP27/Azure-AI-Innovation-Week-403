@@ -62,7 +62,7 @@ def parse_clipboard():
             if not clipboard_content:
                 st.error("クリップボードが空です。")
                 return
-            completion = client.beta.chat.completions.parse(  # 【ポイント!】
+            completion = client.beta.chat.completions.parse(
                 model=deployment,
                 temperature=0,
                 messages=[
